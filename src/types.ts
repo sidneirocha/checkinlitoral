@@ -116,7 +116,7 @@ export const LISTA_IMOVEIS: Imovel[] = [
     vagaGaragem: true,
     churrasqueira: false,
     vistaMar: false,
-    petFriendly: false,
+    petFriendly: true,
     linkAirbnb: "https://www.airbnb.com.br/h/checkinlitoral3",
     imagemCapa: "https://a0.muscache.com/im/pictures/miso/Hosting-40831273/original/c830885b-0ff8-4077-9648-24235c8737ee.jpeg",
     imagensGaleria: [
