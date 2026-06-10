@@ -43,8 +43,6 @@ export default function Hero() {
         />
         {/* Soft, professional dark overlay to guarantee excellent text readability directly on the brand images */}
         <div className="absolute inset-0 bg-black/40" />
-        {/* Elegant light-to-transparent subtle bottom fade to smoothly merge into listings section */}
-        <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-zinc-50 via-transparent to-transparent" />
       </div>
 
       <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 z-10 w-full">
