@@ -104,7 +104,7 @@ export default function App() {
         <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-4 mb-12 text-left">
           <div>
             <span className="text-[11px] font-bold tracking-[3px] uppercase text-primary font-mono mb-2 block">
-              🏡 Seleção Check-In Litoral
+              🏡 Seleção Checkin Litoral
             </span>
             <h2 className="font-heading font-extrabold text-3xl sm:text-4xl text-zinc-900 tracking-tight">
               Os Melhores Imóveis para sua Estadia

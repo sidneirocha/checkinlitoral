@@ -32,7 +32,7 @@ export default function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between">
           {/* Logo brand */}
-          <a href="#" className="flex items-center gap-2 group" aria-label="Check-In Litoral Logo">
+          <a href="#" className="flex items-center gap-2 group" aria-label="Checkin Litoral Logo">
             <LogoCheckin className="h-9 sm:h-11 w-auto transition-transform group-hover:scale-105 active:scale-95 duration-300" />
           </a>
 
@@ -52,7 +52,7 @@ export default function Header() {
           {/* Social / Direct Action WhatsApp CTA */}
           <div className="hidden lg:flex items-center gap-4">
             <a
-              href="https://wa.me/5513988219161?text=Ol%C3%A1!%20Visitei%20o%20site%2520da%20Check-In%20Litoral%20e%20gostaria%2520de%20tirar%20algumas%20d%C3%BAvidas%20sobre%2520as%20loca%C3%A7%C3%B5es."
+              href="https://wa.me/5513988219161?text=Ol%C3%A1!%20Visitei%20o%20site%2520da%20Checkin%20Litoral%20e%20gostaria%2520de%20tirar%20algumas%20d%C3%BAvidas%20sobre%2520as%20loca%C3%A7%C3%B5es."
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2 bg-primary hover:bg-primary-hover text-white px-5 py-2.5 rounded-full font-semibold text-sm transition-all shadow-md shadow-primary/20 hover:shadow-primary/30"
@@ -89,7 +89,7 @@ export default function Header() {
             ))}
             <div className="pt-4 border-t border-gray-150 flex flex-col gap-3 px-3">
               <a
-                href="https://wa.me/5513988219161?text=Ol%C3%A1!%20Visitei%20o%20site%20da%20Check-In%20Litoral%20e%20gostaria%20de%20tirar%20algumas%20d%C3%BAvidas%20sobre%20as%20loca%C3%A7%C3%B5es."
+                href="https://wa.me/5513988219161?text=Ol%C3%A1!%20Visitei%20o%20site%20da%20Checkin%20Litoral%20e%20gostaria%20de%20tirar%20algumas%20d%C3%BAvidas%20sobre%20as%20loca%C3%A7%C3%B5es."
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center justify-center gap-2 bg-primary hover:bg-primary-hover text-white py-3 rounded-xl font-bold text-base transition-colors shadow-lg"

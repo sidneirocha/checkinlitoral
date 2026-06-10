@@ -34,7 +34,7 @@ export default function DirectBookingBanner({ embedded = false, compact = false 
             </p>
           </div>
           <a
-            href="https://wa.me/5513988219161?text=Ol%C3%A1!%20Estava%20olhando%20o%20site%20da%20Check-In%20Litoral%20e%20gostaria%20de%2520saber%20se%20consigo%20desconto%20fechando%2520direto%20com%20voc%C3%AAs%20pelo%20WhatsApp."
+            href="https://wa.me/5513988219161?text=Ol%C3%A1!%20Estava%20olhando%20o%20site%20da%20Checkin%20Litoral%20e%20gostaria%20de%2520saber%20se%20consigo%20desconto%20fechando%2520direto%20com%20voc%C3%AAs%20pelo%20WhatsApp."
             target="_blank"
             rel="noopener noreferrer"
             className={compact ? "whitespace-nowrap bg-white hover:bg-zinc-100 text-zinc-950 py-2.5 px-5 rounded-2xl font-bold text-[11px] uppercase tracking-wider transition-all shadow-xl shadow-black/30 hover:scale-[1.03]" : "whitespace-nowrap bg-white hover:bg-zinc-100 text-zinc-950 py-3.5 px-6 rounded-2xl font-bold text-xs uppercase tracking-wider transition-all shadow-xl shadow-black/30 hover:scale-[1.03]"}

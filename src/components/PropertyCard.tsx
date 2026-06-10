@@ -67,7 +67,7 @@ export default function PropertyCard({ imovel, searchCheckIn, searchCheckOut }: 
   // Prefilled WhatsApp text block
   const getWhatsAppLink = () => {
     const hostNumber = "5513988219161";
-    const text = `Olá, Check-In Litoral! Tudo bem?\n\nTenho interesse em realizar uma reserva no *${imovel.titulo}*.\n\nVi o imóvel no site e gostaria de saber as datas disponíveis e tarifas. Como posso prosseguir com a locação?`;
+    const text = `Olá, Checkin Litoral! Tudo bem?\n\nTenho interesse em realizar uma reserva no *${imovel.titulo}*.\n\nVi o imóvel no site e gostaria de saber as datas disponíveis e tarifas. Como posso prosseguir com a locação?`;
     return `https://wa.me/${hostNumber}?text=${encodeURIComponent(text)}`;
   };
 

@@ -90,7 +90,7 @@ export default function Footer() {
                 <span className="leading-relaxed text-zinc-400">
                   Avenida Bartolomeu de Gusmão, 150 (Canal 6)<br />
                   Ponta da Praia, Santos - SP<br />
-                  Edifício Milão - Na Quadra da Praia
+                  Edifício Milão - Na quadra da praia.
                 </span>
               </li>
               <li className="flex items-center gap-2.5">
@@ -106,7 +106,7 @@ export default function Footer() {
         {/* Divider and bottom rights */}
         <div className="border-t border-zinc-850 pt-8 mt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs font-light text-zinc-500">
           <p className="tracking-wide">
-            © 2026 Check-In Litoral. Todos os direitos reservados e Desenvolvido por{" "}
+            © 2026 Checkin Litoral. Todos os direitos reservados e Desenvolvido por{" "}
             <a
               href="https://haus.art.br"
               target="_blank"
