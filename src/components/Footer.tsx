@@ -1,6 +1,6 @@
 import React from "react";
 import { MapPin, Phone, Mail, Building, ArrowUp, MessageSquare, ShieldCheck, Heart } from "lucide-react";
-import { LogoBranco } from "./Logos";
+import { BrandLogo } from "./BrandLogo";
 
 export default function Footer() {
   const scrollToTop = () => {
@@ -14,7 +14,7 @@ export default function Footer() {
           {/* Column 1: Brand details */}
           <div className="space-y-4">
             <div className="flex items-center">
-              <LogoBranco className="h-10 w-auto" />
+              <BrandLogo variant="dark" className="h-10 w-auto" />
             </div>
             <p className="text-sm font-light leading-relaxed text-zinc-400">
               Sua melhor experiência em locação por temporada na Ponta da Praia, Santos/SP. Conforto, segurança e suporte personalizado para sua estadia perfeita.

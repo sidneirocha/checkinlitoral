@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { MessageSquare, Menu, X, Landmark, Smartphone, Star } from "lucide-react";
-import { LogoCheckin } from "./Logos";
+import { BrandLogo } from "./BrandLogo";
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -35,7 +35,7 @@ export default function Header() {
         <div className="flex items-center justify-between">
           {/* Logo brand */}
           <a href="#" className="flex items-center gap-2 group" aria-label="Checkin Litoral Logo">
-            <LogoCheckin className="h-9 sm:h-11 w-auto transition-transform group-hover:scale-105 active:scale-95 duration-300" />
+            <BrandLogo className="h-9 sm:h-11 w-auto transition-transform group-hover:scale-105 active:scale-95 duration-300" />
           </a>
 
           {/* Desktop Navigation */}

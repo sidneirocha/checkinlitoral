@@ -33,10 +33,10 @@ export default function Hero() {
           className="w-full h-full object-cover object-center opacity-100 brightness-95 transition-all duration-700 select-none"
           referrerPolicy="no-referrer"
           animate={{
-            scale: [1, 1.14],
+            scale: [1, 1.36],
           }}
           transition={{
-            duration: 26,
+            duration: 18,
             repeat: Infinity,
             repeatType: "reverse",
             ease: "easeInOut",
