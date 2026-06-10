@@ -10,6 +10,17 @@ export default function Hero() {
     return images[Math.floor(Math.random() * images.length)];
   });
 
+  const [heroPhrase] = useState(() => {
+    const phrases = [
+      "Hospedagem na praia com o clima de Santos que você procura",
+      "Seu refúgio pé na areia para curtir Santos com tranquilidade",
+      "Conforto, mar e praticidade para sua estadia em Santos",
+      "A experiência certa de hospedagem na orla de Santos",
+      "Dias leves e bem aproveitados na praia de Santos"
+    ];
+    return phrases[Math.floor(Math.random() * phrases.length)];
+  });
+
   return (
     <div className="relative min-h-[92vh] flex items-center justify-center overflow-hidden py-20 sm:py-28">
       {/* Imagem de fundo 100% limpa com brilho e nitidez totais para valorizar a orla de Santos */}
@@ -32,10 +43,7 @@ export default function Hero() {
           
           {/* Main Title - Premium white and radiant gradient typography */}
           <h1 className="font-heading font-extrabold text-4xl sm:text-5xl md:text-6xl text-white tracking-tight leading-[1.12] drop-shadow-lg">
-            Seu próximo destino <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-amber-300 to-yellow-200">
-              à beira-mar de Santos
-            </span>
+            {heroPhrase}
           </h1>
 
         </div>
