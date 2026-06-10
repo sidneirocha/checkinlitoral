@@ -23,9 +23,6 @@ interface PropertyCardProps {
   searchCheckOut?: string;
 }
 
-const AIRBNB_LOGO_URL =
-  "https://upload.wikimedia.org/wikipedia/commons/6/69/Airbnb_Logo_B%C3%A9lo.svg";
-
 export default function PropertyCard({ imovel, searchCheckIn, searchCheckOut }: PropertyCardProps) {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [showDetails, setShowDetails] = useState(false);
@@ -158,12 +155,6 @@ export default function PropertyCard({ imovel, searchCheckIn, searchCheckOut }: 
         <div className="flex items-center gap-2 flex-wrap mb-3">
           <div className="inline-flex items-center gap-1.5 bg-[#FF385C]/10 text-[#FF385C] px-3 py-1.5 rounded-full text-[11px] font-extrabold tracking-wider uppercase">
             <span>Superhost</span>
-            <img
-              src={AIRBNB_LOGO_URL}
-              alt="Airbnb"
-              className="w-12 h-12 object-contain ml-1 shrink-0"
-              referrerPolicy="no-referrer"
-            />
           </div>
         </div>
 
@@ -241,15 +232,9 @@ export default function PropertyCard({ imovel, searchCheckIn, searchCheckOut }: 
               href={imovel.linkAirbnb}
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-[#FF385C] hover:bg-[#E61E4D] text-white py-3 px-4 rounded-xl font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer transform hover:-translate-y-0.5 shadow-md shadow-[#FF385C]/10 text-center"
+              className="bg-[#FF385C] hover:bg-[#E61E4D] text-white py-2.5 px-4 rounded-xl font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer transform hover:-translate-y-0.5 shadow-md shadow-[#FF385C]/10 text-center min-h-[3rem]"
             >
-              <span>Ver no</span>
-              <img
-                src={AIRBNB_LOGO_URL}
-                alt="Airbnb"
-                className="w-16 h-16 object-contain brightness-0 invert shrink-0"
-                referrerPolicy="no-referrer"
-              />
+              Ver no Airbnb
             </a>
 
             {/* CTA 2: WhatsApp link */}
