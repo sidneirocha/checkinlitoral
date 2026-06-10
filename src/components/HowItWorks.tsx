@@ -11,7 +11,7 @@ export default function HowItWorks() {
     {
       icon: <CalendarDays className="w-6 h-6 text-primary" />,
       titulo: "2. Verifique Valores & Datas",
-      descricao: "Utilize nossa agenda de disponibilidade atualizada integrada a cada imóvel para selecionar as datas e calcular os valores com total transparência. Você pode seguir com a reserva pelo Airbnb ou concluir direto pelo WhatsApp."
+      descricao: "Consulte o calendário oficial do Airbnb para verificar as datas e calcular os valores com total transparência. Você pode seguir com a reserva pelo Airbnb ou concluir direto pelo WhatsApp."
     },
     {
       icon: <Key className="w-6 h-6 text-primary" />,
