@@ -33,8 +33,13 @@ export default function Footer() {
                 </a>
               </li>
               <li>
-                <a href="#como-funciona" className="hover:text-primary transition-colors flex items-center gap-1.5">
-                  📋 Passo a Passo
+                <a href="#anfitria" className="hover:text-primary transition-colors flex items-center gap-1.5">
+                  👩‍💼 Anfitriã
+                </a>
+              </li>
+              <li>
+                <a href="#localizacao" className="hover:text-primary transition-colors flex items-center gap-1.5">
+                  📍 Localização
                 </a>
               </li>
               <li>

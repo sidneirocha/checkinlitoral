@@ -3,7 +3,7 @@ import { GraduationCap, Award, MapPin, Shield, MessageSquare, Calendar } from "l
 
 export default function HostSection() {
   return (
-    <section id="anfitriao" className="py-20 bg-white border-t border-zinc-150 relative overflow-hidden">
+    <section id="anfitria" className="py-20 bg-white border-t border-zinc-150 relative overflow-hidden">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 className="font-heading font-extrabold text-2xl sm:text-3xl text-zinc-900 tracking-tight mb-10 text-left">
           Conheça seu anfitrião
