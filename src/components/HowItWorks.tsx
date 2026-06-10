@@ -1,4 +1,5 @@
 import React from "react";
+import { motion } from "motion/react";
 import { Search, CalendarDays, Key } from "lucide-react";
 
 export default function HowItWorks() {
@@ -25,8 +26,13 @@ export default function HowItWorks() {
       {/* Visual background bubbles */}
       <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full blur-3xl -mr-32 -mt-32" />
       <div className="absolute bottom-0 left-0 w-96 h-96 bg-black/10 rounded-full blur-3xl -ml-32 -mb-32" />
-
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center z-10">
+      <motion.div
+        className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center z-10"
+        initial={{ opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-120px" }}
+        transition={{ duration: 0.55, ease: "easeOut" }}
+      >
         {/* Title */}
         <span className="text-[11px] font-bold tracking-[3px] uppercase text-orange-200 font-mono mb-2 block">
           📋 Passo a Passo
@@ -41,9 +47,13 @@ export default function HowItWorks() {
         {/* 3 Step Timeline Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
           {steps.map((step, index) => (
-            <div
+            <motion.div
               key={index}
               className="bg-white/95 backdrop-blur-sm rounded-3xl p-6 sm:p-8 shadow-xl hover:shadow-2xl transition-all relative text-left border border-white/20 transform hover:-translate-y-1 duration-300"
+              initial={{ opacity: 0, y: 28 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-80px" }}
+              transition={{ duration: 0.45, delay: index * 0.08, ease: "easeOut" }}
             >
               {/* Step indicator balloon */}
               <div className="absolute top-5 right-5 font-heading font-black text-5xl text-zinc-300 drop-shadow-sm leading-none tracking-wider select-none">
@@ -60,10 +70,10 @@ export default function HowItWorks() {
               <p className="text-zinc-650 text-xs sm:text-sm leading-relaxed font-light">
                 {step.descricao}
               </p>
-            </div>
+            </motion.div>
           ))}
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 }

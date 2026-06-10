@@ -26,19 +26,19 @@ export default function Hero() {
   return (
     <section className="relative overflow-visible pb-24 sm:pb-32 lg:pb-40">
       {/* Imagem de fundo 100% limpa com brilho e nitidez totais para valorizar a orla de Santos */}
-      <div className="absolute inset-0 z-0 min-h-[92vh] overflow-hidden">
+      <div className="absolute inset-0 z-0 min-h-[70vh] overflow-hidden">
         <motion.img
           src={backgroundImage}
           alt="Orla de Santos SP - Ponta da Praia"
           className="w-full h-full object-cover object-center opacity-100 brightness-95 transition-all duration-700 select-none"
           referrerPolicy="no-referrer"
           animate={{
-            scale: [1, 1.05, 1.02, 1],
-            x: [0, 10, -6, 0],
+            scale: [1, 1.14],
           }}
           transition={{
-            duration: 28,
+            duration: 26,
             repeat: Infinity,
+            repeatType: "reverse",
             ease: "easeInOut",
           }}
         />
@@ -46,7 +46,7 @@ export default function Hero() {
         <div className="absolute inset-0 bg-black/40" />
       </div>
 
-      <div className="relative min-h-[92vh] flex items-center justify-center py-20 sm:py-28 z-10">
+      <div className="relative min-h-[70vh] flex items-center justify-center py-16 sm:py-20 z-10">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
           {/* Text floats completely free of any container boxes, perfectly readable */}
           <div className="text-center max-w-2xl mx-auto">

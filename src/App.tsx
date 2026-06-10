@@ -101,7 +101,13 @@ export default function App() {
 
       {/* Main Properties Section */}
       <main id="imoveis" className="py-20 mt-20 sm:mt-24 lg:mt-28 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-        <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-4 mb-12 text-left">
+        <motion.div
+          className="flex flex-col md:flex-row items-start md:items-end justify-between gap-4 mb-12 text-left"
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-120px" }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+        >
           <div>
             <span className="text-[11px] font-bold tracking-[3px] uppercase text-primary font-mono mb-2 block">
               🏡 Seleção Checkin Litoral
@@ -115,7 +121,13 @@ export default function App() {
           </div>
 
           {/* Current Active Filtering Status Pill */}
-          <div className="bg-zinc-100 border border-zinc-200/60 rounded-full px-4 py-2 flex items-center gap-2.5 text-xs text-zinc-750 font-semibold shadow-sm shrink-0">
+          <motion.div
+            className="bg-zinc-100 border border-zinc-200/60 rounded-full px-4 py-2 flex items-center gap-2.5 text-xs text-zinc-750 font-semibold shadow-sm shrink-0"
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.45, delay: 0.12, ease: "easeOut" }}
+          >
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping inline-block" />
             <span>
               {imoveisFiltrados.length === 4
@@ -132,8 +144,8 @@ export default function App() {
                 Limpar
               </button>
             )}
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
 
         {/* Properties Cards Loop Grid */}
         <AnimatePresence mode="popLayout">
@@ -146,10 +158,11 @@ export default function App() {
                 <motion.div
                   key={imovel.id}
                   layout
-                  initial={{ opacity: 0, scale: 0.98, y: 15 }}
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  initial={{ opacity: 0, scale: 0.98, y: 28 }}
+                  whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-80px" }}
                   exit={{ opacity: 0, scale: 0.95, y: -15 }}
-                  transition={{ duration: 0.35, ease: "easeOut" }}
+                  transition={{ duration: 0.45, ease: "easeOut" }}
                 >
                   <PropertyCard
                     imovel={imovel}

@@ -23,13 +23,15 @@ export default function Header() {
 
   return (
     <header
-      className={`sticky top-0 z-50 transition-all duration-300 ${
-        isScrolled
-          ? "bg-white/95 backdrop-blur-md py-3 shadow-md border-b border-gray-100"
-          : "bg-white/90 backdrop-blur border-b border-gray-150 py-4"
-      }`}
+      className="fixed top-[30px] left-0 right-0 z-50 px-4 sm:px-6 lg:px-8 pointer-events-none"
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div
+        className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pointer-events-auto transition-all duration-300 rounded-[28px] border ${
+          isScrolled
+            ? "bg-white/95 backdrop-blur-md py-3 shadow-xl shadow-zinc-900/10 border-white/80"
+            : "bg-white/90 backdrop-blur py-3.5 shadow-lg shadow-zinc-900/5 border-white/70"
+        }`}
+      >
         <div className="flex items-center justify-between">
           {/* Logo brand */}
           <a href="#" className="flex items-center gap-2 group" aria-label="Checkin Litoral Logo">
@@ -75,7 +77,7 @@ export default function Header() {
 
       {/* Mobile drop menu */}
       {isMobileMenuOpen && (
-        <div className="md:hidden bg-white shadow-xl border-b border-gray-150 absolute top-[100%] left-0 w-full z-45 transform transition-all duration-300">
+        <div className="md:hidden bg-white/95 backdrop-blur-md shadow-xl border border-gray-150 absolute top-[calc(100%+10px)] left-4 right-4 rounded-3xl z-45 transform transition-all duration-300 pointer-events-auto">
           <div className="px-4 pt-2 pb-6 space-y-3">
             {menuItems.map((item) => (
               <a
