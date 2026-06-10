@@ -2,7 +2,7 @@ import React from "react";
 
 export default function DirectBookingBanner() {
   return (
-    <section className="py-16 px-4 sm:px-6 lg:px-8 bg-zinc-50">
+    <section className="-mt-10 pb-16 px-4 sm:px-6 lg:px-8 bg-zinc-50 relative z-10">
       <div className="max-w-7xl mx-auto">
         <div className="bg-zinc-950 text-white rounded-3xl p-6 sm:p-10 flex flex-col lg:flex-row items-center justify-between gap-6 shadow-2xl text-left border border-white/5">
           <div className="max-w-2xl">
