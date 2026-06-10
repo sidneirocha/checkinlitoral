@@ -46,7 +46,7 @@ export default function HowItWorks() {
               className="bg-white/95 backdrop-blur-sm rounded-3xl p-6 sm:p-8 shadow-xl hover:shadow-2xl transition-all relative text-left border border-white/20 transform hover:-translate-y-1 duration-300"
             >
               {/* Step indicator balloon */}
-              <div className="absolute top-6 right-6 font-heading font-black text-4xl text-gray-100/80 tracking-wider select-none">
+              <div className="absolute top-5 right-5 font-heading font-black text-5xl text-zinc-300 drop-shadow-sm leading-none tracking-wider select-none">
                 0{index + 1}
               </div>
 

@@ -23,6 +23,9 @@ interface PropertyCardProps {
   searchCheckOut?: string;
 }
 
+const AIRBNB_LOGO_URL =
+  "https://upload.wikimedia.org/wikipedia/commons/6/69/Airbnb_Logo_B%C3%A9lo.svg";
+
 export default function PropertyCard({ imovel, searchCheckIn, searchCheckOut }: PropertyCardProps) {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [showDetails, setShowDetails] = useState(false);
@@ -152,6 +155,18 @@ export default function PropertyCard({ imovel, searchCheckIn, searchCheckOut }: 
           {imovel.titulo}
         </h3>
 
+        <div className="flex items-center gap-2 flex-wrap mb-3">
+          <div className="inline-flex items-center gap-1.5 bg-[#FF385C]/10 text-[#FF385C] px-3 py-1.5 rounded-full text-[11px] font-extrabold tracking-wider uppercase">
+            <span>Superhost</span>
+            <img
+              src={AIRBNB_LOGO_URL}
+              alt="Airbnb"
+              className="w-12 h-12 object-contain ml-1 shrink-0"
+              referrerPolicy="no-referrer"
+            />
+          </div>
+        </div>
+
         {/* Descrição Curta */}
         <p className="text-sm text-gray-600 line-clamp-2 h-10 mb-4 font-light">
           {imovel.descricaoCurta}
@@ -220,24 +235,21 @@ export default function PropertyCard({ imovel, searchCheckIn, searchCheckOut }: 
 
         {/* Diária e CTAs */}
         <div className="mt-auto border-t border-zinc-100 pt-5 font-heading">
-          <div className="flex items-center mb-4">
-            <div className="flex items-center gap-1.5 bg-[#FF385C]/10 text-[#FF385C] px-3.5 py-1.5 rounded-full text-[11px] font-extrabold tracking-wider uppercase">
-              <span>★ Airbnb Superhost</span>
-            </div>
-          </div>
-
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {/* CTA 1: Airbnb link */}
             <a
               href={imovel.linkAirbnb}
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-[#FF385C] hover:bg-[#E61E4D] text-white py-3 px-4 rounded-xl font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 transition-all cursor-pointer transform hover:-translate-y-0.5 shadow-md shadow-[#FF385C]/10 text-center"
+              className="bg-[#FF385C] hover:bg-[#E61E4D] text-white py-3 px-4 rounded-xl font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer transform hover:-translate-y-0.5 shadow-md shadow-[#FF385C]/10 text-center"
             >
-              <svg viewBox="0 0 32 32" className="w-4 h-4 fill-current text-white" aria-hidden="true" focusable="false">
-                <path d="M16 1c2.008 0 3.463.963 4.751 3.269l.533 1.025c1.954 3.83 6.114 12.54 7.1 14.836 1.451 3.401.528 7.374-2.18 9.513a9.96 9.96 0 0 1-6.108 2.057 9.92 9.92 0 0 1-5.748-1.812l-.348-.258-.348.258a9.92 9.92 0 0 1-5.748 1.812 9.96 9.96 0 0 1-6.108-2.057c-2.708-2.139-3.631-6.112-2.18-9.513.985-2.296 5.144-11.006 7.1-14.836l.533-1.025C12.537 1.963 13.992 1 16 1zm0 2c-1.298 0-2.202.651-3.053 2.18l-.48 1.011c-1.955 3.83-6.114 12.54-7.1 14.836-1.045 2.45-.316 5.378 1.636 6.921A7.95 7.95 0 0 0 12 29.7c1.782 0 3.451-.6 4-1.5 1-.95 1-2.95 1-3.95v-1c0-1.657-1.343-3-3-3s-3 1.343-3 3c0 .542.143 1.05.393 1.493l.107.172c-.413.565-1.055.935-1.8.935-1.215 0-2.2-.985-2.2-2.2 0-1.85 1.5-3.35 3.35-3.35h3.3c1.85 0 3.35 1.5 3.35 3.35 0 1.215-.985 2.2-2.2 2.2-.745 0-1.387-.37-1.8-.935l.107-.172c.25-.443.393-.951.393-1.493 0-1.657-1.343-3-3-3s-3 1.343-3 3v1c0 1 .1 3 1 3.95.549.9 2.218 1.5 4 1.5a7.95 7.95 0 0 0 4.908-1.752c1.952-1.543 2.681-4.471 1.636-6.921-.986-2.296-5.145-11.006-7.1-14.836l-.48-1.011C18.202 3.651 17.298 3 16 3z" />
-              </svg>
-              Ver no Airbnb
+              <span>Ver no</span>
+              <img
+                src={AIRBNB_LOGO_URL}
+                alt="Airbnb"
+                className="w-16 h-16 object-contain brightness-0 invert shrink-0"
+                referrerPolicy="no-referrer"
+              />
             </a>
 
             {/* CTA 2: WhatsApp link */}

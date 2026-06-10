@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import Header from "./components/Header";
 import Hero from "./components/Hero";
-import DirectBookingBanner from "./components/DirectBookingBanner";
 import HowItWorks from "./components/HowItWorks";
 import ReviewsSection from "./components/ReviewsSection";
 import HostSection from "./components/HostSection";
@@ -100,11 +99,8 @@ export default function App() {
       {/* Hero Search Section */}
       <Hero onFilterChange={handleFilterChange} filtrosAtuais={filtros} />
 
-      {/* Direct booking highlight */}
-      <DirectBookingBanner />
-
       {/* Main Properties Section */}
-      <main id="imoveis" className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+      <main id="imoveis" className="py-20 mt-20 sm:mt-24 lg:mt-28 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
         <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-4 mb-12 text-left">
           <div>
             <span className="text-[11px] font-bold tracking-[3px] uppercase text-primary font-mono mb-2 block">

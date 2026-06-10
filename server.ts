@@ -1,7 +1,6 @@
 import express from "express";
 import path from "path";
 import { createServer as createViteServer } from "vite";
-import { GoogleGenAI, Type } from "@google/genai";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -9,19 +8,15 @@ dotenv.config();
 const PORT = 3000;
 let reviewsCache: any = null;
 let lastRefreshedAt: number = 0;
-
-// Initialize Google GenAI
-const apiKey = process.env.GEMINI_API_KEY;
-const ai = apiKey
-  ? new GoogleGenAI({
-      apiKey,
-      httpOptions: {
-        headers: {
-          "User-Agent": "aistudio-build",
-        },
-      },
-    })
-  : null;
+const GOOGLE_BUSINESS_API_V4 = "https://mybusiness.googleapis.com/v4";
+const GOOGLE_BUSINESS_ACCOUNT_API_V1 = "https://mybusinessaccountmanagement.googleapis.com/v1";
+const GOOGLE_BUSINESS_LOCATION_API_V1 = "https://mybusinessbusinessinformation.googleapis.com/v1";
+const DEFAULT_BUSINESS_NAME = "Checkin Litoral - Imóveis de Temporada";
+const DEFAULT_LOCATION_TITLE = "Checkin Litoral";
+const DEFAULT_AVATAR =
+  "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&q=80";
+const TOKEN_SAFETY_WINDOW_MS = 60 * 1000;
+let cachedGoogleAccessToken: { token: string; expiresAt: number } | null = null;
 
 // Fallback reviews to return if API key is missing or call fails
 const FALLBACK_REVIEWS = [
@@ -325,103 +320,292 @@ async function syncAllAirbnbProperties() {
   }
 }
 
-// Help function to fetch and format from Google Search Grounding using Gemini
+function normalizeResourceId(value: string | undefined | null, prefix: string) {
+  if (!value) return null;
+  return value.startsWith(`${prefix}/`) ? value.slice(prefix.length + 1) : value;
+}
+
+function extractGoogleReviewNumber(starRating: any) {
+  const value = String(starRating || "").toUpperCase();
+  const map: Record<string, number> = {
+    ONE: 1,
+    TWO: 2,
+    THREE: 3,
+    FOUR: 4,
+    FIVE: 5,
+  };
+  const fromEnum = map[value];
+  if (typeof fromEnum === "number") return fromEnum;
+  const numeric = Number(starRating);
+  return Number.isFinite(numeric) && numeric > 0 ? numeric : 5;
+}
+
+function formatRelativeDate(input: any) {
+  if (!input) return "Recente";
+  const date = new Date(input);
+  if (Number.isNaN(date.getTime())) return String(input);
+
+  const diffMs = Date.now() - date.getTime();
+  const diffDays = Math.max(0, Math.floor(diffMs / (24 * 60 * 60 * 1000)));
+  if (diffDays <= 0) return "Há pouco";
+  if (diffDays === 1) return "Há 1 dia";
+  if (diffDays < 7) return `Há ${diffDays} dias`;
+  if (diffDays < 14) return "Há 1 semana";
+  if (diffDays < 30) return `Há ${Math.max(2, Math.round(diffDays / 7))} semanas`;
+  if (diffDays < 60) return "Há 1 mês";
+  return `Há ${Math.max(2, Math.round(diffDays / 30))} meses`;
+}
+
+function inferPropertyFromText(text: string | undefined | null) {
+  const normalized = (text || "").toLowerCase();
+  if (!normalized) return null;
+
+  if (normalized.includes("sala living")) {
+    return "Sala Living 3º Andar - Ed. Milão - Santos/SP";
+  }
+  if (normalized.match(/9(º|°|o)?\s*andar|nono andar/)) {
+    return "Kitnet 9º Andar - Ed. Milão - Santos/SP";
+  }
+  if (normalized.match(/4(º|°|o)?\s*andar|quarto andar/)) {
+    return "Kitnet 4º Andar - Ed. Milão - Santos/SP";
+  }
+  if (normalized.match(/3(º|°|o)?\s*andar|terceiro andar/)) {
+    return "Kitnet 3º Andar - Ed. Milão - Santos/SP";
+  }
+  return null;
+}
+
+async function fetchGoogleAccessToken() {
+  const accessToken = process.env.GOOGLE_BUSINESS_ACCESS_TOKEN;
+  const refreshToken = process.env.GOOGLE_BUSINESS_REFRESH_TOKEN;
+  const clientId = process.env.GOOGLE_BUSINESS_CLIENT_ID;
+  const clientSecret = process.env.GOOGLE_BUSINESS_CLIENT_SECRET;
+
+  if (cachedGoogleAccessToken && cachedGoogleAccessToken.expiresAt > Date.now() + TOKEN_SAFETY_WINDOW_MS) {
+    return cachedGoogleAccessToken.token;
+  }
+
+  if (accessToken) {
+    cachedGoogleAccessToken = {
+      token: accessToken,
+      expiresAt: Date.now() + 60 * 60 * 1000,
+    };
+    return accessToken;
+  }
+
+  if (!refreshToken || !clientId || !clientSecret) {
+    return null;
+  }
+
+  const response = await fetch("https://oauth2.googleapis.com/token", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: new URLSearchParams({
+      client_id: clientId,
+      client_secret: clientSecret,
+      refresh_token: refreshToken,
+      grant_type: "refresh_token",
+    }),
+  });
+
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`Falha ao renovar token do Google: ${response.status} ${text}`);
+  }
+
+  const payload = (await response.json()) as { access_token?: string; expires_in?: number };
+  if (!payload.access_token) {
+    return null;
+  }
+
+  cachedGoogleAccessToken = {
+    token: payload.access_token,
+    expiresAt: Date.now() + Math.max(0, (payload.expires_in ?? 3600) * 1000),
+  };
+
+  return payload.access_token;
+}
+
+async function googleApiRequest(url: string, accessToken: string, init: RequestInit = {}) {
+  const response = await fetch(url, {
+    ...init,
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      Accept: "application/json",
+      ...(init.headers || {}),
+    },
+  });
+
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`Google API error (${response.status}) for ${url}: ${text}`);
+  }
+
+  return response.json();
+}
+
+async function listGoogleAccounts(accessToken: string) {
+  const data = await googleApiRequest(`${GOOGLE_BUSINESS_ACCOUNT_API_V1}/accounts?pageSize=100`, accessToken);
+  return Array.isArray(data?.accounts) ? data.accounts : [];
+}
+
+async function listGoogleLocations(accessToken: string, accountId: string) {
+  const data = await googleApiRequest(
+    `${GOOGLE_BUSINESS_LOCATION_API_V1}/accounts/${accountId}/locations?readMask=name,title&pageSize=100`,
+    accessToken,
+  );
+  return Array.isArray(data?.locations) ? data.locations : [];
+}
+
+async function resolveGoogleBusinessContext(accessToken: string) {
+  const envAccountId = normalizeResourceId(process.env.GOOGLE_BUSINESS_ACCOUNT_ID, "accounts");
+  const envLocationId = normalizeResourceId(process.env.GOOGLE_BUSINESS_LOCATION_ID, "locations");
+  const envLocationTitle = (process.env.GOOGLE_BUSINESS_LOCATION_TITLE || DEFAULT_LOCATION_TITLE).toLowerCase();
+  const envBusinessName = (process.env.GOOGLE_BUSINESS_NAME || DEFAULT_BUSINESS_NAME).toLowerCase();
+
+  if (envAccountId && envLocationId) {
+    return {
+      accountId: envAccountId,
+      locationId: envLocationId,
+      locationName: `accounts/${envAccountId}/locations/${envLocationId}`,
+    };
+  }
+
+  const accounts = await listGoogleAccounts(accessToken);
+  if (!accounts.length) {
+    throw new Error("Nenhuma conta do Google Business Profile foi encontrada para o token autenticado.");
+  }
+
+  const selectedAccount =
+    accounts.find((account: any) => {
+      const displayName = String(account?.displayName || "").toLowerCase();
+      const accountName = String(account?.name || "").toLowerCase();
+      return displayName.includes(envBusinessName) || accountName.includes(envBusinessName);
+    }) || accounts[0];
+
+  const accountId = normalizeResourceId(selectedAccount?.name, "accounts");
+  if (!accountId) {
+    throw new Error("Não foi possível identificar o accountId do Google Business Profile.");
+  }
+
+  if (envLocationId) {
+    return {
+      accountId,
+      locationId: envLocationId,
+      locationName: `accounts/${accountId}/locations/${envLocationId}`,
+    };
+  }
+
+  const locations = await listGoogleLocations(accessToken, accountId);
+  if (!locations.length) {
+    throw new Error("Nenhuma localização foi encontrada para a conta autenticada.");
+  }
+
+  const selectedLocation =
+    locations.find((location: any) => {
+      const title = String(location?.title || "").toLowerCase();
+      const locationName = String(location?.name || "").toLowerCase();
+      return title.includes(envLocationTitle) || locationName.includes(envLocationTitle);
+    }) || locations[0];
+
+  const locationId = normalizeResourceId(selectedLocation?.name, "locations");
+  if (!locationId) {
+    throw new Error("Não foi possível identificar o locationId do Google Business Profile.");
+  }
+
+  return {
+    accountId,
+    locationId,
+    locationName: selectedLocation?.name || `accounts/${accountId}/locations/${locationId}`,
+  };
+}
+
+async function fetchGoogleReviewsPage(
+  accessToken: string,
+  accountId: string,
+  locationId: string,
+  pageToken?: string,
+) {
+  const url = new URL(`${GOOGLE_BUSINESS_API_V4}/accounts/${accountId}/locations/${locationId}/reviews`);
+  url.searchParams.set("pageSize", "50");
+  if (pageToken) {
+    url.searchParams.set("pageToken", pageToken);
+  }
+
+  return googleApiRequest(url.toString(), accessToken);
+}
+
+// Fetch real reviews from the Google Business Profile API
 async function fetchLatestFromGoogleMaps() {
-  if (!ai) {
-    console.warn("GEMINI_API_KEY is not defined. Using fallback values.");
+  const accessToken = await fetchGoogleAccessToken();
+  if (!accessToken) {
+    console.warn(
+      "Google Business Profile OAuth credentials not configured. Using fallback review values.",
+    );
     return DEFAULT_RATING;
   }
 
   try {
-    const prompt = `Busque as avaliações reais e as informações mais recentes do perfil do Google Maps para o negócio "Checkin Litoral - Imóveis de Temporada" em Santos - SP (URL da página: https://www.google.com/maps/place/Checkin+Litoral+-+Im%C3%B3veis+de+Temporada/@-23.9833219,-46.3103236,1018m/data=!3m1!1e3!4m8!3m7!1s0x94ce03a8d287e31d:0x8efb5631f30e5f72!8m2!3d-23.9833219!4d-46.3077487!9m1!1b1!16s%2Fg%2F11gypfsbrw).
-    Identifique a nota média atual do perfil, o número total acumulado de avaliações, e extraia os detalhes das avaliações do Google reais mais recentes escritas por hóspedes.
-    Para cada avaliação, colete: o nome do autor (autor), foto de perfil do autor (fotoUrl), nota dada (nota), data relativa aproximada (data, ex: "Há 1 dia", "Há uma semana", "Há duas semanas", "Há um mês") e o texto de feedback real (texto).
-    Se o comentário indicar ou der a entender o apartamento em que ficaram no Edifício Milão (como o 9º Andar, 4º Andar, 3º Andar, ou Sala Living 3º Andar), preencha o campo "imovelVisitado" com o nome completo do imóvel correspondente da lista de propriedades (exemplo: "Kitnet 9º Andar - Ed. Milão - Santos/SP", "Kitnet 4º Andar - Ed. Milão - Santos/SP", "Kitnet 3º Andar - Ed. Milão - Santos/SP", "Sala Living 3º Andar - Ed. Milão - Santos/SP"). Caso contrário, deixe esse campo omitido ou null.
-    Retorne os valores estruturados estritamente em conformidade com o JSON schema fornecido.`;
+    const { accountId, locationId, locationName } = await resolveGoogleBusinessContext(accessToken);
+    console.log(`Fetching Google reviews from ${locationName}...`);
 
-    console.log("Triggering Gemini with Search Grounding to fetch Google reviews...");
-    const response = await ai.models.generateContent({
-      model: "gemini-3.5-flash",
-      contents: prompt,
-      config: {
-        tools: [{ googleSearch: {} }],
-        responseMimeType: "application/json",
-        responseSchema: {
-          type: Type.OBJECT,
-          properties: {
-            mediaAvaliacoes: { 
-              type: Type.NUMBER, 
-              description: "A nota média acumulada" 
-            },
-            totalAvaliacoes: { 
-              type: Type.INTEGER, 
-              description: "O número total de avaliações reais recebidas no Google" 
-            },
-            avaliacoes: {
-              type: Type.ARRAY,
-              description: "Lista das últimas avaliações reais encontradas",
-              items: {
-                type: Type.OBJECT,
-                properties: {
-                  autor: { type: Type.STRING },
-                  fotoUrl: { 
-                    type: Type.STRING, 
-                    description: "Uma URL de foto válida ou um placeholder padrão caso não esteja disponível" 
-                  },
-                  nota: { 
-                    type: Type.NUMBER, 
-                    description: "Nota numérica dada pelo hóspede (de 1 a 5)" 
-                  },
-                  data: { 
-                    type: Type.STRING, 
-                    description: "Tempo decorrido (ex: 'Há uma semana')" 
-                  },
-                  texto: { 
-                    type: Type.STRING, 
-                    description: "Texto do comentário do hóspede" 
-                  },
-                  imovelVisitado: { 
-                    type: Type.STRING, 
-                    description: "Identificação do imóvel da base (ex: 'Kitnet 9º Andar - Ed. Milão - Santos/SP' ou similar), se puder ser deduzido" 
-                  }
-                },
-                required: ["autor", "nota", "data", "texto"]
-              }
-            }
-          },
-          required: ["mediaAvaliacoes", "totalAvaliacoes", "avaliacoes"]
-        }
-      }
-    });
+    const allReviews: any[] = [];
+    let pageToken: string | undefined;
+    let pageCount = 0;
 
-    const resultText = response.text;
-    if (resultText) {
-      const parsed = JSON.parse(resultText);
-      console.log("Successfully fetched and parsed reviews from Google Maps Grounding:", parsed);
-      
-      // Override values to strictly enforce user request (Rating: 5.0, Reviews: 150)
-      parsed.mediaAvaliacoes = 5.0;
-      parsed.totalAvaliacoes = 150;
+    do {
+      const page = await fetchGoogleReviewsPage(accessToken, accountId, locationId, pageToken);
+      const reviews = Array.isArray(page?.reviews) ? page.reviews : [];
+      allReviews.push(...reviews);
+      pageToken = page?.nextPageToken;
+      pageCount += 1;
+    } while (pageToken && pageCount < 20);
 
-      // Ensure fotoUrls are valid or use defaults
-      if (parsed.avaliacoes && Array.isArray(parsed.avaliacoes)) {
-        parsed.avaliacoes = parsed.avaliacoes.map((u: any, idx: number) => {
-          if (!u.fotoUrl || !u.fotoUrl.startsWith("http")) {
-            u.fotoUrl = `https://images.unsplash.com/photo-${1500000000000 + idx}?auto=format&fit=crop&w=150&q=80`;
-          }
-          u.nota = 5; // Clamp guest stars to 5 stars
-          return {
-            id: `google-${idx}-${Date.now()}`,
-            ...u
-          };
-        });
-      }
-      return parsed;
+    if (!allReviews.length) {
+      console.warn("Google Business Profile returned no reviews. Falling back to default review set.");
+      return DEFAULT_RATING;
     }
-    
-    throw new Error("Empty response from Gemini model.");
+
+    const normalizedReviews = allReviews
+      .map((review: any, idx: number) => {
+        const text = review?.comment || review?.text || "";
+        const reviewerName = review?.reviewer?.displayName || review?.authorName || "Hóspede Google";
+        const photoUrl =
+          review?.reviewer?.profilePhotoUrl ||
+          review?.reviewer?.photoUri ||
+          review?.profilePhotoUrl ||
+          DEFAULT_AVATAR;
+
+        const inferredProperty = inferPropertyFromText(text) || inferPropertyFromText(review?.reviewReply?.comment);
+
+        return {
+          id: review?.reviewId || review?.name || `google-review-${idx}`,
+          autor: reviewerName,
+          fotoUrl: photoUrl.startsWith("http") ? photoUrl : DEFAULT_AVATAR,
+          nota: extractGoogleReviewNumber(review?.starRating),
+          data: formatRelativeDate(review?.createTime || review?.updateTime || review?.reviewTime),
+          texto: text || "Avaliação sem comentário escrito.",
+          ...(inferredProperty ? { imovelVisitado: inferredProperty } : {}),
+        };
+      })
+      .filter((review) => review.texto);
+
+    const mediaAvaliacoes =
+      normalizedReviews.reduce((sum, review) => sum + Number(review.nota || 0), 0) /
+      Math.max(1, normalizedReviews.length);
+
+    const parsed = {
+      mediaAvaliacoes: Number.isFinite(mediaAvaliacoes) ? Number(mediaAvaliacoes.toFixed(1)) : 5.0,
+      totalAvaliacoes: normalizedReviews.length,
+      avaliacoes: normalizedReviews.slice(0, 12),
+    };
+
+    console.log("Successfully fetched reviews from Google Business Profile API:", parsed);
+    return parsed;
   } catch (error) {
-    console.error("Failed to fetch custom google reviews via Gemini:", error);
+    console.error("Failed to fetch Google reviews via Business Profile API:", error);
     return DEFAULT_RATING;
   }
 }

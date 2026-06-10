@@ -16,8 +16,9 @@ export default function Header() {
 
   const menuItems = [
     { label: "Nossos Imóveis", href: "#imoveis" },
-    { label: "Como Funciona", href: "#como-funciona" },
-    { label: "Avaliações Google", href: "#avaliacoes" }
+    { label: "Avaliações Google", href: "#avaliacoes" },
+    { label: "Anfitriã", href: "#anfitria" },
+    { label: "Localização", href: "#localizacao" }
   ];
 
   return (
