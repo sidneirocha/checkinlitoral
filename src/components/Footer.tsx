@@ -1,5 +1,5 @@
 import React from "react";
-import { MapPin, Phone, Mail, Building, ArrowUp, MessageSquare, ShieldCheck, Heart } from "lucide-react";
+import { Phone, Mail, Building, ArrowUp, MessageSquare, ShieldCheck, Heart } from "lucide-react";
 import { BrandLogo } from "./BrandLogo";
 
 export default function Footer() {
@@ -85,14 +85,6 @@ export default function Footer() {
               Fale Conosco
             </h4>
             <ul className="space-y-3 text-sm font-light">
-              <li className="flex items-start gap-2.5">
-                <MapPin className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-                <span className="leading-relaxed text-zinc-400">
-                  Avenida Bartolomeu de Gusmão, 150 (Canal 6)<br />
-                  Ponta da Praia, Santos - SP<br />
-                  Edifício Milão - Na quadra da praia.
-                </span>
-              </li>
               <li className="flex items-center gap-2.5">
                 <Phone className="w-4 h-4 text-primary shrink-0" />
                 <a href="https://wa.me/5513988219161" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors font-semibold text-white">
