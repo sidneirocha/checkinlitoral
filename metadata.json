@@ -1,0 +1,6 @@
+{
+  "name": "Check-In Litoral",
+  "description": "Aluguel de temporada de alto padrão em Santos/SP. Apartamentos à beira-mar, totalmente equipados, com suporte 24h e reserva simples via WhatsApp.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
