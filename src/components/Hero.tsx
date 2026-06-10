@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { motion } from "motion/react";
 
 export default function Hero() {
   // Randomly select between the two provided premium beachfront orla views on page mount
@@ -25,11 +26,20 @@ export default function Hero() {
     <div className="relative min-h-[92vh] flex items-center justify-center overflow-hidden py-20 sm:py-28">
       {/* Imagem de fundo 100% limpa com brilho e nitidez totais para valorizar a orla de Santos */}
       <div className="absolute inset-0 z-0">
-        <img
+        <motion.img
           src={backgroundImage}
           alt="Orla de Santos SP - Ponta da Praia"
           className="w-full h-full object-cover object-center opacity-100 brightness-95 transition-all duration-700 select-none"
           referrerPolicy="no-referrer"
+          animate={{
+            scale: [1, 1.05, 1.02, 1],
+            x: [0, 10, -6, 0],
+          }}
+          transition={{
+            duration: 28,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
         />
         {/* Soft, professional dark overlay to guarantee excellent text readability directly on the brand images */}
         <div className="absolute inset-0 bg-black/40" />
